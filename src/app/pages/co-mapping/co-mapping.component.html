@@ -1,0 +1,59 @@
+<div class="row w-100 m-0">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-header bg-white">
+        <div class="d-flex flex-column w-100">
+          <h4 class="m-0">Course Outcome Mapping with PO/PSO</h4>
+          <div class="d-flex justify-content-between">
+            <app-filters (courseSelections)="getCourses($event)"></app-filters>
+            <div class="d-flex justify-content-end align-items-center">
+              <button class="btn btn-primary" (click)="enableSelects=!enableSelects" [disabled]="selectedCourse === undefined" [ngClass]="{
+                'mr-2': enableSelects
+              }">
+                {{ enableSelects ? 'Cancel' : 'Edit' }}
+              </button>
+              <button class="btn btn-primary" *ngIf="enableSelects" (click)="saveCOPOMapping()">Save Map</button>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="row w-100">
+          <div class="col-12">
+          </div>
+        </div> -->
+      </div>
+      <div class="card-body" *ngIf="selectedCourse === undefined">
+        <app-no-data message="Nothing To Show!! Please Select Course First"></app-no-data>
+      </div>
+      <div class="table-responsive" *ngIf="selectedCourse !== undefined">
+        <table class="table table-flush m-0 text-center">
+          <thead class="thead-light">
+            <tr>
+              <th></th>
+              <th *ngFor="let po of poCodes">{{ po }}</th>
+              <th *ngFor="let pso of psoCodes">{{ pso }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let co of selectedCourseCOCodes; index as idx">
+              <td>{{ co }}</td>
+              <td *ngFor="let po of poCodes">
+                <select name="poMap" id="poMap" class="custom-select" (change)="addPOFormGroup(co, po, $event.target.value)" [disabled]="!enableSelects">
+                  <option *ngFor="let opt of selectOptions; index as idx" [value]="idx" [selected]="idx === onOptionSelected(co, po)">
+                    {{ opt.name }}
+                  </option>
+                </select>
+              </td>
+              <td *ngFor="let pso of psoCodes">
+                <select name="psoMap" id="psoMap" class="custom-select" (change)="addPOFormGroup(co, pso, $event.target.value)" [disabled]="!enableSelects">
+                  <option *ngFor="let opt of selectOptions; index as idx" [value]="idx" [selected]="idx === onOptionSelected(co, pso)">
+                    {{ opt.name }}
+                  </option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<div class="row w-100 m-0">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-header bg-white">
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <h4>Batches</h4>
+          </div>
+          <div class="col-12 col-sm-6">
+            <button class="btn btn-primary d-flex align-items-center float-right"
+              (click)="openCurriculumModel(batchModel)"
+              *ngIf="data.userModel.superAdmin || data.userModel.designation === 'HoD'">
+              <span class="material-icons mr-1">add</span>
+              Batch
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-flush">
+          <thead class="thead-light">
+            <tr>
+              <th>Sr. No</th>
+              <th>Batch Name</th>
+              <th>Department</th>
+              <!-- <th>Course Reviewer / Dept.</th> -->
+              <th>Batch Created By</th>
+              <th>Created On</th>
+              <th *ngIf="data.userModel.superAdmin || data.userModel.designation === 'HoD'">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let batch of curriculums; index as idx">
+              <td>{{ idx + 1 }}</td>
+              <td>
+                <div class="d-flex flex-column">
+                  <span>{{ batch.curriculumName | titlecase }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex flex-column">
+                  <span>{{ batch.deptName }}</span>
+                </div>
+              </td>
+              <td>{{ batch.curriculumOwner }}</td>
+              <td>{{ batch.createdAt | date: 'dd-MM-yyyy hh:mm:ss a' }}</td>
+              <td *ngIf="data.userModel.superAdmin || data.userModel.designation === 'HoD'">
+                <button type="button" class="btn btn-primary btn-sm mr-1 mb-1"
+                  (click)="openCurriculumModel(batchModel, batch)">
+                  Update
+                </button>
+                <button type="button" class="btn btn-danger btn-sm mr-1 mb-1"
+                  (click)="deleteCurriculum(deleteModal, batch._id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template let-modal #batchModel>
+  <div class="modal-header border-0">
+    <div class="row w-100 m-0">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4>{{ batchUpdateBool ? 'Update' : 'Add' }} Batchs</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross Clicked')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="batchForm" (ngSubmit)="submitForm(batchForm)">
+    <div class="modal-body">
+      <div class="row w-100 m-0">
+        <div class="form-group col-12">
+          <label class="text-sm">Batch Name</label>
+          <input type="text" name="batchName" formControlName="curriculumName" class="form-control">
+        </div>
+        <div class="form-group col-12">
+          <label class="text-sm">Department</label>
+          <select name="deptName" id="deptName" class="custom-select" formControlName="deptName">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let dept of departments; index as idx" [ngValue]="dept">
+              {{ dept }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-12">
+          <label class="text-sm">Owner Name</label>
+          <input type="text" name="ownerName" formControlName="curriculumOwner" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-sm btn-dark">Submit</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+  <div class="modal-header d-flex justify-content-between align-items-center border-0">
+    <button type="button" class="close" aria-label="Close" id="closeModal" #closeModal
+      (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <!-- <img src="./../../../assets/warning.svg" alt="" class="img-fluid" width="128px" height="128px"> -->
+      <h6 class="m-0 mt-2 text-muted">Are you sure want to delete this Batch?</h6>
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button type="button" class="btn btn-sm btn-dark float-right mr-2" (click)="modal.dismiss('Cross click')">
+      NO
+    </button>
+    <button type="submit" class="btn btn-sm btn-danger float-right mr-2" (click)="modal.close('1')">
+      YES
+    </button>
+  </div>
+</ng-template>
